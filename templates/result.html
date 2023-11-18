@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Fixed height for the table container and vertical scrolling */
+        .table-container {
+            max-height: 400px; /* Adjust the height as needed */
+            overflow-y: scroll;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .header {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>URL</th>
+                <th>Likes</th>
+                <th>Genre</th>
+                <th>Duration</th>
+                <th>Views</th>
+                <th>Uploads</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in result %}
+            <tr>
+                <td>{{ item.Title }}</td>
+                <td>{{ item.URL }}</td>
+                <td>{{ item.Likes }}</td>
+                <td>{{ item.Genre }}</td>
+                <td>{{ item.Duration }}</td>
+                <td>{{ item.Views }}</td>
+                <td>{{ item.Uploads }}</td>
+                <td>{{ item.Description }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Add a button to download data in Excel format -->
+<button onclick="downloadExcel()">Download Excel</button>
+
+<!-- Include the xlsx library for Excel export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+
+<script>
+    function downloadExcel() {
+        const table = document.querySelector('table');
+        const rows = table.querySelectorAll('tr');
+        const data = [];
+
+        rows.forEach((row) => {
+            const rowData = [];
+            const cols = row.querySelectorAll('td, th');
+            cols.forEach((col) => {
+                rowData.push(col.textContent);
+            });
+            data.push(rowData);
+        });
+
+        const ws = XLSX.utils.aoa_to_sheet(data);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, 'Table Data');
+        XLSX.writeFile(wb, 'table_data.xlsx');
+    }
+</script>
+
+</body>
+</html>
